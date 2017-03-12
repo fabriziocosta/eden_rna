@@ -5,7 +5,7 @@
 # in this file i try to make a wrapper
 
 import networkx as nx
-import eden.modifier.rna.lib_forgi as lib_forgi
+import  lib_forgi
 
 
 def get_abstr_graph(struct):
