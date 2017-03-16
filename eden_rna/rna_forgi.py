@@ -8,23 +8,23 @@ import networkx as nx
 import  lib_forgi
 
 
-def get_abstr_graph(struct):
+def get_abstr_graph(struct, min_node_id=0):
     # get forgi string
     bg = lib_forgi.BulgeGraph()
     bg.from_dotbracket(struct, None)
     forgi = bg.to_bg_string()
 
-    g = make_abstract_graph(forgi)
+    g = make_abstract_graph(forgi,min_node_id)
     return g
 
 
-def make_abstract_graph(forgi):
-    g = forgi_to_graph(forgi)
+def make_abstract_graph(forgi,min_node_id):
+    g = forgi_to_graph(forgi,min_node_id)
     connect_multiloop(g)
     return g
 
 
-def forgi_to_graph(forgi):
+def forgi_to_graph(forgi,min_node_id):
     def make_node_set(numbers):
         '''
         forgi gives me stuff like define STEM START,END,START,END .. we take indices and output a list
@@ -64,7 +64,7 @@ def forgi_to_graph(forgi):
             label = line[1][0]
             id = line[1]
             myset = make_node_set(line[2:])
-            node_id = len(g)
+            node_id = min_node_id + len(g)
 
             # build a node and remember its id
             g.add_node(node_id)
