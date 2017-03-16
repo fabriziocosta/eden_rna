@@ -10,9 +10,12 @@ from sklearn.metrics.pairwise import pairwise_kernels
 
 from eden.sequence import Vectorizer as SeqVectorizer
 from eden.graph import Vectorizer as GraphVectorizer
-from eden.converter.rna import sequence_dotbracket_to_graph
-from eden.converter.fasta import seq_to_networkx
-from eden.converter.rna import rnafold
+
+
+
+from eden_rna import sequence_dotbracket_to_graph
+from eden_rna.io.fasta import seq_to_networkx
+from eden_rna import rnafold
 
 import logging
 
@@ -162,7 +165,7 @@ class Vectorizer(object):
     def _align_sequence_structure(self, seq, neighs, structure_deletions=False):
         header = seq[0]
         if len(neighs) < 1:
-            clean_seq, clean_struct = rnafold.RNAfold_wrapper(seq[1])
+            clean_seq, clean_struct = rnafold.rnafold_wrapper(seq[1])
             energy = 0
             logger.debug('Warning: no alignment for: %s' % seq)
         else:
@@ -177,7 +180,7 @@ class Vectorizer(object):
             struct, energy = extract_struct_energy(out)
             if energy > self.min_energy:
                 # use min free energy structure
-                clean_seq, clean_struct = rnafold.RNAfold_wrapper(seq[1])
+                clean_seq, clean_struct = rnafold.rnafold_wrapper(seq[1])
             else:
                 clean_seq, clean_struct = make_seq_struct(seed, struct)
             if structure_deletions:
