@@ -164,12 +164,19 @@ class Vectorizer(object):
 
     def _align_sequence_structure(self, seq, neighs, structure_deletions=False):
         header = seq[0]
-        if len(neighs) < 1:
+        # if seq is in neigh rnaalifold will die...
+        seq_in_neighs=False
+        if seq in [y for x,y in neighs]:
+            seq_in_neighs=True
+
+        if len(neighs) < 1 or (seq_in_neighs and len(neighs)==2):
             clean_seq, clean_struct = rnafold.rnafold_wrapper(seq[1])
             energy = 0
             logger.debug('Warning: no alignment for: %s' % seq)
         else:
-            str_out = convert_seq_to_fasta_str(seq)
+            str_out = ""
+            if seq_in_neighs:
+                str_out = convert_seq_to_fasta_str(seq)
             for neigh in neighs:
                 str_out += convert_seq_to_fasta_str(neigh)
             cmd = 'echo "%s" | muscle -clwstrict -quiet' % (str_out)
