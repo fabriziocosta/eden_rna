@@ -42,9 +42,14 @@ def convert_seq_to_fasta_str(seq_pair):
 def extract_aligned_seed(header, out):
     text = out.strip().split('\n')
     seed = ''
-    for line in text:
-        if header in line:
-            seed += line.strip().split()[1]
+    
+    try:
+        for line in text:
+            if header in line:
+                seed += line.strip().split()[1]
+    except:
+        import pdb
+        pdb.set_trace()
     return seed
 
 
@@ -176,7 +181,7 @@ class Vectorizer(object):
         else:
             str_out = ""
             if seq_in_neighs:
-                str_out = convert_seq_to_fasta_str(seq)
+                str_out = convert_seq_to_fasta_str(('',seq))
             for neigh in neighs:
                 str_out += convert_seq_to_fasta_str(neigh)
             cmd = 'echo "%s" | muscle -clwstrict -quiet' % (str_out)
