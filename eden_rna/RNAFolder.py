@@ -43,14 +43,9 @@ def extract_aligned_seed(header, out):
     text = out.strip().split('\n')
     seed = ''
     
-    try:
-        for line in text:
-            if header in line:
-                seed += line.strip().split()[1]
-    except:
-        pass
-        #import pdb
-        #pdb.set_trace()
+    for line in text:
+        if header in line:
+            seed += line.strip().split()[1]
     return seed
 
 
