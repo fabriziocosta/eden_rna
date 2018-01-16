@@ -42,6 +42,7 @@ def convert_seq_to_fasta_str(seq_pair):
 def extract_aligned_seed(header, out):
     text = out.strip().split('\n')
     seed = ''
+    
     for line in text:
         if header in line:
             seed += line.strip().split()[1]
@@ -164,11 +165,15 @@ class Vectorizer(object):
 
     def _align_sequence_structure(self, seq, neighs, structure_deletions=False):
         header = seq[0]
+        # if seq is in neigh rnaalifold will die...  rm duplicates :)
+        neighs = [ (a,b) for a,b in neighs if b!=seq[1]  ]
+
         if len(neighs) < 1:
             clean_seq, clean_struct = rnafold.rnafold_wrapper(seq[1])
             energy = 0
             logger.debug('Warning: no alignment for: %s' % seq)
         else:
+
             str_out = convert_seq_to_fasta_str(seq)
             for neigh in neighs:
                 str_out += convert_seq_to_fasta_str(neigh)

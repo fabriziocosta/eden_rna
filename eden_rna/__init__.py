@@ -2,6 +2,7 @@
 """Provides basic conversion for RNAs."""
 
 import networkx as nx
+import collections
 
 __author__ = "Fabrizio Costa, Bjoern Gruening"
 __copyright__ = "Copyright 2014, Fabrizio Costa"
@@ -29,14 +30,21 @@ def sequence_dotbracket_to_graph(seq_info=None, seq_struct=None):
         secondary struct associated with seq_struct
     """
     graph = nx.Graph()
-    lifo = list()
+
+    lifo = collections.defaultdict(list)
+    open_brace_string={")":"(",
+                "]":"[",
+                ">":"<"}
+
     for i, (c, b) in enumerate(zip(seq_info, seq_struct)):
         graph.add_node(i, label=c, position=i)
         if i > 0:
             graph.add_edge(i, i - 1, label='-', type='backbone', len=1)
-        if b == '(':
-            lifo.append(i)
-        if b == ')':
-            j = lifo.pop()
+        if b in ['(','[','<']:
+            lifo[b].append(i)
+        if b in [')',']','>']:
+            j = lifo[open_brace_string[b]].pop()
             graph.add_edge(i, j, label='=', type='basepair', len=1)
+
+
     return graph
